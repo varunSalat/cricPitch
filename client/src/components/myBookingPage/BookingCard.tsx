@@ -8,8 +8,8 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import BookingCancellationModal from "@/components/myBookingPage/BookingCancellationModal";
+import BookingCancellationModal from "./BookingCancellationModal";
+import { Button } from "../ui/button";
 
 type Booking = (typeof upcomingBookings)[number];
 
@@ -59,14 +59,10 @@ const BookingCard = ({ booking }: BookingCardProps) => {
             <BookingCancellationModal
               bookingId={booking.id}
               bookingTitle={booking.title}
-              onConfirm={(id) => console.log("Cancel booking", id)}
+              onConfirm={(id) => console.log("Confirm cancellation for", id)}
               trigger={
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50"
-                >
-                  <XCircle className="mr-2 h-4 w-4" />
+                <Button variant="destructive" size="sm">
+                  <XCircle className="h-4 w-4" />
                   Cancel
                 </Button>
               }

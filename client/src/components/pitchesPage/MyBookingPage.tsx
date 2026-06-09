@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { pastBookings, upcomingBookings } from "@/data";
-import BookingCard from "./BookingCard";
+import BookingCard from "../myBookingPage/BookingCard";
 
 const MyBookingPage = () => {
   return (

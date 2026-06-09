@@ -8,9 +8,11 @@ import HomePage from "./pages/HomePage";
 import PitchesPage from "./pages/PitchesPage";
 import MyBookingPage from "./components/pitchesPage/MyBookingPage";
 import RootLayout from "./layout/RootLayout";
-import ErrorPage from "./pages/ErrorPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import LoginPage from "./components/pitchesPage/LoginPage";
+import ErrorPage from "./pages/general/ErrorPage";
+import NotFoundPage from "./pages/general/NotFoundPage";
+import LoginPage from "./pages/auth/LoginPage";
+import PitchDetailsPage from "./pages/PitchDetailsPage";
+import SignUpPage from "./pages/auth/SignUpPage";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -18,10 +20,12 @@ const App = () => {
       <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
         {/* Auth Routes */}
         <Route path="login" element={<LoginPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
         {/*Protected Route  */}
         <Route index element={<HomePage />} />
         <Route path="pitches" element={<PitchesPage />} />
         <Route path="bookings" element={<MyBookingPage />} />
+        <Route path="pitches/:pitchId" element={<PitchDetailsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>,
     ),
