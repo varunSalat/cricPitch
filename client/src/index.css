@@ -1,0 +1,180 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Geist Variable", sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #f9fbf8;
+  --foreground: #163926;
+  --card: #ffffff;
+  --card-foreground: #163926;
+  --popover: #f4f9f2;
+  --popover-foreground: #163926;
+  --primary: #25935f;
+  --primary-foreground: #ffffff;
+  --secondary: #3b8d6d;
+  --secondary-foreground: #ffffff;
+  --muted: #e7f2ea;
+  --muted-foreground: #315c43;
+  --accent: #1f7a4f;
+  --accent-foreground: #ffffff;
+  --destructive: #d64545;
+  --border: #d7e6dd;
+  --input: #eef5ee;
+  --ring: #67be8a;
+  --chart-1: #88c99d;
+  --chart-2: #6ca67f;
+  --chart-3: #52916b;
+  --chart-4: #3f7a58;
+  --chart-5: #2f6348;
+  --radius: 0.625rem;
+  --sidebar: #f4f9f2;
+  --sidebar-foreground: #163926;
+  --sidebar-primary: #25935f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #3b8d6d;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #d7e6dd;
+  --sidebar-ring: #67be8a;
+}
+
+.dark {
+  --background: #0f251a;
+  --foreground: #eff8ee;
+  --card: #15291e;
+  --card-foreground: #eff8ee;
+  --popover: #15291e;
+  --popover-foreground: #eff8ee;
+  --primary: #65d296;
+  --primary-foreground: #0f251a;
+  --secondary: #3f8a6b;
+  --secondary-foreground: #eff8ee;
+  --muted: #183427;
+  --muted-foreground: #c8e6d0;
+  --accent: #2b8d5f;
+  --accent-foreground: #eff8ee;
+  --destructive: #d64545;
+  --border: #264936;
+  --input: #173824;
+  --ring: #60cc8e;
+  --chart-1: #88c99d;
+  --chart-2: #6ca67f;
+  --chart-3: #52916b;
+  --chart-4: #3f7a58;
+  --chart-5: #2f6348;
+  --sidebar: #13271c;
+  --sidebar-foreground: #eff8ee;
+  --sidebar-primary: #65d296;
+  --sidebar-primary-foreground: #0f251a;
+  --sidebar-accent: #3f8a6b;
+  --sidebar-accent-foreground: #eff8ee;
+  --sidebar-border: #264936;
+  --sidebar-ring: #60cc8e;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .nav-underline {
+    width: 0;
+    transition: width 300ms ease;
+  }
+
+  .group:hover .nav-underline,
+  .active-link .nav-underline {
+    width: 100%;
+  }
+
+  .hero-gradient {
+    background: radial-gradient(
+      circle at top left,
+      rgba(37, 147, 95, 0.18),
+      transparent 35%
+    );
+  }
+
+  .animate-hero-card {
+    animation: heroCard 900ms ease-out both;
+  }
+
+  .animate-hero-text {
+    animation: heroText 900ms ease-out both;
+  }
+
+  @keyframes heroCard {
+    from {
+      transform: translateY(24px) scale(0.98);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes heroText {
+    from {
+      transform: translateX(-24px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+}
