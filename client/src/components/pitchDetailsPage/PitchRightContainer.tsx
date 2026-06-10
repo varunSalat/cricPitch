@@ -3,16 +3,19 @@ import { useParams } from "react-router-dom";
 import ConfirmPitchModal from "./ConfirmPitchModal";
 import { Calendar, Clock, MapPin, ShieldCheck } from "lucide-react";
 import { pitches } from "@/data/pitches";
-import { mockSlots } from "@/data";
+import type { Slot } from "@/hooks/useSlots";
 
 interface PitchRightContainerProps {
   selectedDate: Date;
   selectedSlots: string[];
+  slots: Slot[];
+  reserveSlot: (slotId: string) => Promise<unknown>;
 }
 
 const PitchRightContainer: React.FC<PitchRightContainerProps> = ({
   selectedDate,
   selectedSlots,
+  slots,
 }) => {
   const { pitchId } = useParams();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -31,7 +34,8 @@ const PitchRightContainer: React.FC<PitchRightContainerProps> = ({
       day: "numeric",
     });
 
-  const selectedSlotDetails = mockSlots.filter((slot) =>
+  // Use live socket slots for details
+  const selectedSlotDetails = slots.filter((slot) =>
     selectedSlots.includes(slot.id),
   );
 
@@ -132,6 +136,7 @@ const PitchRightContainer: React.FC<PitchRightContainerProps> = ({
         selectedSlots={selectedSlotDetails.map(
           (s) => `${s.startTime} – ${s.endTime}`,
         )}
+        selectedSlotIds={selectedSlots}
         totalPrice={totalPrice}
       />
 

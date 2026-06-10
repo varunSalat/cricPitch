@@ -1,29 +1,34 @@
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import PitchDetailHeroSection from "@/components/pitchDetailsPage/PitchDetailHeroSection";
 import SelectDateSection from "@/components/pitchDetailsPage/SelectDateSection";
 import AvailableSlotSection from "@/components/pitchDetailsPage/AvailableSlotSection";
 import PitchRightContainer from "@/components/pitchDetailsPage/PitchRightContainer";
 import { useAuth } from "@/context/AuthContext";
 import AuthModal from "@/components/general/AuthModal";
-import { useNavigate } from "react-router-dom";
+import { useSlots } from "@/hooks/useSlots";
 
 const PitchDetailsPage = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedSlots, setSelectedSlots] = useState<string[]>(["1"]); // Default matching 6:00 AM slot
-  const { isAuthenticated } = useAuth();
+  const { pitchId } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
+
+  // Socket-driven live slot data
+  const { slots, isLoading, error, reserveSlot, unreserveSlot } = useSlots(
+    pitchId,
+    selectedDate,
+  );
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
-    setSelectedSlots([]); // Clear slots on date change
+    setSelectedSlots([]); // Clear selections on date change
   };
 
   const handleSlotToggle = (slotId: string) => {
-    setSelectedSlots((prev) =>
-      prev.includes(slotId)
-        ? prev.filter((id) => id !== slotId)
-        : [...prev, slotId],
-    );
+    setSelectedSlots((prev) => (prev.includes(slotId) ? [] : [slotId]));
   };
 
   return (
@@ -37,8 +42,13 @@ const PitchDetailsPage = () => {
             onDateChange={handleDateChange}
           />
           <AvailableSlotSection
+            slots={slots}
+            isLoading={isLoading}
+            error={error}
             selectedSlots={selectedSlots}
             onSlotToggle={handleSlotToggle}
+            reserveSlot={reserveSlot}
+            unreserveSlot={unreserveSlot}
           />
         </div>
         {/* Right container */}
@@ -46,6 +56,8 @@ const PitchDetailsPage = () => {
           <PitchRightContainer
             selectedDate={selectedDate}
             selectedSlots={selectedSlots}
+            slots={slots}
+            reserveSlot={reserveSlot}
           />
         </div>
       </div>
@@ -53,7 +65,6 @@ const PitchDetailsPage = () => {
       <AuthModal
         isOpen={!isAuthenticated}
         onClose={() => {
-          // Navigating away only occurs when clicking "Back to Pitches"
           navigate("/pitches");
         }}
       />

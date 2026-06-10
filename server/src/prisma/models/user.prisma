@@ -1,0 +1,11 @@
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  phoneNumber  String?       @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  password     String
+  bookings     Booking[]
+  reservations Reservation[]
+}

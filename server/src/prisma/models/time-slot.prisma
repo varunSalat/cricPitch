@@ -1,0 +1,15 @@
+model TimeSlot {
+  id           String        @id @default(uuid())
+  pitchId      String
+  date         DateTime
+  startTime    String
+  endTime      String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  isBooked     Boolean       @default(false)
+  bookings     Booking[]
+  reservations Reservation[]
+  pitch        Pitch         @relation(fields: [pitchId], references: [id])
+
+  @@index([pitchId], map: "TimeSlot_pitchId_fkey")
+}

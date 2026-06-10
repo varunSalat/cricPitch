@@ -6,6 +6,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
+import { SocketProvider } from "./context/SocketContext.tsx";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <App />
+        <SocketProvider>
+          <App />
+        </SocketProvider>
       </AuthProvider>
       <Toaster closeButton={false} position="top-right" />
       {/* USE IT FOR DEBUGGING */}

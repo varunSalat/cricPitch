@@ -1,0 +1,16 @@
+model Pitch {
+  id           String     @id @default(uuid())
+  name         String
+  type         String
+  typeStyle    String
+  image        String     @db.Text
+  location     String
+  sportType    String
+  pricePerHour Decimal    @db.Decimal(10, 2)
+  hours        String
+  tags         Json
+  description  String     @db.Text
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  slots        TimeSlot[]
+}

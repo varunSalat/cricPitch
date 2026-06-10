@@ -1,4 +1,10 @@
-import type { TimeSlot } from "@/components/pitchDetailsPage/AvailableSlotSection";
+export interface TimeSlot {
+  id: string;
+  startTime: string;
+  endTime: string;
+  isBooked: boolean;
+}
+
 
 export const upcomingBookings = [
   {

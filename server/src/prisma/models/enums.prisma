@@ -1,0 +1,18 @@
+enum SlotStatus {
+  AVAILABLE
+  RESERVED
+  BOOKED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum ReservationStatus {
+  ACTIVE
+  EXPIRED
+  COMPLETED
+  CANCELLED
+}

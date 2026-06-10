@@ -1,0 +1,13 @@
+model Booking {
+  id         String   @id @default(uuid())
+  userId     String
+  timeSlotId String
+  timeSlot   TimeSlot @relation(fields: [timeSlotId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@index([timeSlotId], map: "Booking_timeSlotId_fkey")
+  @@index([userId], map: "Booking_userId_fkey")
+}
