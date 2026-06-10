@@ -1,16 +1,16 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { pastBookings, upcomingBookings } from "@/data";
-import BookingCard from "../myBookingPage/BookingCard";
+import BookingCard from "../components/myBookingPage/BookingCard";
 
 const MyBookingPage = () => {
   return (
     <main className="bg-background px-6 py-10 sm:px-10 lg:px-12">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <div className="space-y-3">
-          <h1 className="text-4xl font-bold text-foreground sm:text-5xl">
+          <h1 className="text-foreground text-4xl font-bold sm:text-5xl">
             My Bookings
           </h1>
-          <p className="text-sm leading-7 text-muted-foreground">
+          <p className="text-muted-foreground text-sm leading-7">
             Manage and track all your pitch reservations
           </p>
         </div>
@@ -32,7 +32,7 @@ const MyBookingPage = () => {
                 className="rounded-full px-5 py-3 text-sm font-semibold"
               >
                 Past & Cancelled
-                <span className="ml-2 inline-flex h-6 items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-semibold text-foreground">
+                <span className="text-foreground ml-2 inline-flex h-6 items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-semibold">
                   {pastBookings.length}
                 </span>
               </TabsTrigger>

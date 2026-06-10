@@ -1,23 +1,23 @@
 import { NavLink } from "react-router-dom";
-import { User } from "lucide-react";
+import { NavUser } from "./NavUser";
+import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
   { to: "/", label: "Home" },
   { to: "/pitches", label: "Pitches" },
-  { to: "/bookings", label: "My Bookings" },
 ];
 
 const Header = () => {
-  const isLoggedIn = false;
+  const { isAuthenticated } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur-xl">
+    <header className="border-border/70 bg-background/90 sticky top-0 z-50 border-b backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
         <NavLink
           to="/"
-          className="flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground"
+          className="text-foreground flex items-center gap-3 text-lg font-semibold tracking-tight"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full">
             CP
           </div>
           <span>CricPitch</span>
@@ -39,23 +39,38 @@ const Header = () => {
                   }
                 >
                   {item.label}
-                  <span className="nav-underline absolute bottom-0 left-0 h-[2px] bg-primary" />
+                  <span className="nav-underline bg-primary absolute bottom-0 left-0 h-[2px]" />
                 </NavLink>
               </li>
             ))}
+            {isAuthenticated && (
+              <li>
+                <NavLink
+                  to="/bookings"
+                  end={true}
+                  className={({ isActive }) =>
+                    `group relative inline-flex items-center transition-colors duration-200 ${
+                      isActive
+                        ? "active-link text-foreground font-semibold"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`
+                  }
+                >
+                  My Bookings
+                  <span className="nav-underline bg-primary absolute bottom-0 left-0 h-[2px]" />
+                </NavLink>
+              </li>
+            )}
           </ul>
         </nav>
 
         <div>
-          {isLoggedIn ? (
-            <button className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:bg-primary/10">
-              <User className="h-4 w-4" />
-              Profile
-            </button>
+          {isAuthenticated ? (
+            <NavUser />
           ) : (
             <NavLink
               to="/login"
-              className="rounded-full border border-primary bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+              className="border-primary bg-primary text-primary-foreground hover:bg-primary/90 rounded-full border px-4 py-2 text-sm font-semibold transition"
             >
               Login
             </NavLink>

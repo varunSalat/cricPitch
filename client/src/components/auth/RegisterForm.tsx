@@ -4,70 +4,63 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { showErrorToast, showSuccessToast } from "@/lib/toasts";
 import { getAPIErrorMsg } from "@/utils/getAPIErrorMsg";
 import { Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
 import { publicFetch } from "@/lib/fetchAPI";
 
-const loginSchema = z.object({
+// Validation schema
+const registerSchema = z.object({
+  name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
+  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+// Infer the TypeScript type from the schema
+type RegisterFormData = z.infer<typeof registerSchema>;
 
-interface LoginFormProps extends React.ComponentProps<"div"> {
+interface RegisterFormProps extends React.ComponentProps<"div"> {
   onSuccess?: () => void;
 }
 
-export function LoginForm({
+const RegisterForm = ({
   className,
   onSuccess,
   ...props
-}: LoginFormProps) {
+}: RegisterFormProps) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
-  const pathname = useLocation().pathname;
-
-  console.log("pathname", pathname);
 
   const {
     register: formRegister,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
+      phoneNumber: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await publicFetch("/auth/login", {
+      await publicFetch("/auth/register", {
         method: "POST",
         body: data,
       });
-
-      if (response?.data) {
-        const { token, user } = response.data;
-        login(user, token);
-      }
-
-      showSuccessToast("Login successful");
+      showSuccessToast("Registration successful");
       if (onSuccess) {
         onSuccess();
-      }
-      // Only navigate to dashboard/home if user was on login page
-      if (pathname === "/login") {
-        navigate("/");
+      } else {
+        navigate("/login");
       }
     } catch (error) {
       showErrorToast(getAPIErrorMsg(error));
@@ -84,12 +77,24 @@ export function LoginForm({
           >
             <div>
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Create an account</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your CricPitch account
+                  Sign up to get started with CricPitch
                 </p>
               </div>
               <div className="mt-6 space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  {...formRegister("name")}
+                />
+                {errors.name && (
+                  <p className="text-sm text-red-500">{errors.name.message}</p>
+                )}
+              </div>
+              <div className="mt-4 space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -102,15 +107,21 @@ export function LoginForm({
                 )}
               </div>
               <div className="mt-4 space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <Input
+                  id="phoneNumber"
+                  type="tel"
+                  placeholder="1234567890"
+                  {...formRegister("phoneNumber")}
+                />
+                {errors.phoneNumber && (
+                  <p className="text-sm text-red-500">
+                    {errors.phoneNumber.message}
+                  </p>
+                )}
+              </div>
+              <div className="mt-4 space-y-2">
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -140,23 +151,23 @@ export function LoginForm({
                   </p>
                 )}
               </div>
-              <div className="mt-4">
+              <div className="mt-6">
                 <Button
                   className="w-full"
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Logging in..." : "Login"}
+                  {isSubmitting ? "Signing up..." : "Sign Up"}
                 </Button>
               </div>
 
               <p className="text-muted-foreground mt-4 text-center text-sm">
-                Don&apos;t have an account?{" "}
+                Already have an account?{" "}
                 <Link
-                  to="/register"
+                  to="/login"
                   className="underline-offset-4 hover:underline"
                 >
-                  Sign up
+                  Login
                 </Link>
               </p>
             </div>
@@ -183,4 +194,6 @@ export function LoginForm({
       </p>
     </div>
   );
-}
+};
+
+export default RegisterForm;

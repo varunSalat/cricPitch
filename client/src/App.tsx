@@ -6,21 +6,24 @@ import {
 } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PitchesPage from "./pages/PitchesPage";
-import MyBookingPage from "./components/pitchesPage/MyBookingPage";
+import MyBookingPage from "./pages/MyBookingPage";
 import RootLayout from "./layout/RootLayout";
 import ErrorPage from "./pages/general/ErrorPage";
 import NotFoundPage from "./pages/general/NotFoundPage";
 import LoginPage from "./pages/auth/LoginPage";
 import PitchDetailsPage from "./pages/PitchDetailsPage";
-import SignUpPage from "./pages/auth/SignUpPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import AuthLayout from "./layout/AuthLayout";
 
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
         {/* Auth Routes */}
-        <Route path="login" element={<LoginPage />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/" element={<AuthLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+        </Route>
         {/*Protected Route  */}
         <Route index element={<HomePage />} />
         <Route path="pitches" element={<PitchesPage />} />

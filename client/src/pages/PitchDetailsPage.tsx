@@ -1,12 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PitchDetailHeroSection from "@/components/pitchDetailsPage/PitchDetailHeroSection";
 import SelectDateSection from "@/components/pitchDetailsPage/SelectDateSection";
 import AvailableSlotSection from "@/components/pitchDetailsPage/AvailableSlotSection";
 import PitchRightContainer from "@/components/pitchDetailsPage/PitchRightContainer";
+import { useAuth } from "@/context/AuthContext";
+import AuthModal from "@/components/general/AuthModal";
+import { useNavigate } from "react-router-dom";
 
 const PitchDetailsPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedSlots, setSelectedSlots] = useState<string[]>(["1"]); // Default matching 6:00 AM slot
+  const { isAuthenticated } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+    }
+  }, [isAuthenticated]);
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -44,6 +56,15 @@ const PitchDetailsPage = () => {
           />
         </div>
       </div>
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => {
+          setShowAuthModal(false);
+          // Go back to the pitches list page if user rejects logging in
+          navigate("/pitches");
+        }}
+      />
     </main>
   );
 };

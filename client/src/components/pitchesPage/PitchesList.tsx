@@ -1,32 +1,115 @@
-import { useMemo, useState } from "react";
 import { Clock3, IndianRupee, MapPin, Zap } from "lucide-react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { pitches } from "@/data/pitches";
+import { publicFetch } from "@/lib/fetchAPI";
+import { useQuery } from "@tanstack/react-query";
+import ErrorComponent from "@/components/general/ErrorComponent";
+import PitchesListSkeleton from "./PitchesLoader";
+import PaginationComponent from "@/components/general/PaginationComponent";
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 9;
 
-const PitchesList = () => {
-  const [page, setPage] = useState(1);
-  const pageCount = Math.ceil(pitches.length / PAGE_SIZE);
+interface Pitch {
+  id: string;
+  name: string;
+  type: string;
+  typeStyle: string;
+  image: string;
+  location: string;
+  hours: string;
+  tags: string[];
+  pricePerHour: string;
+}
 
-  const currentPitches = useMemo(
-    () => pitches.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [page],
-  );
+interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+interface PitchesResponse {
+  data: Pitch[];
+  pagination: PaginationMeta;
+}
+
+interface PitchesListProps {
+  search: string;
+  type: string;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  page: number;
+  onPageChange: (page: number) => void;
+}
+
+const fetchPitches = (
+  page: number,
+  search: string,
+  type: string,
+  sortBy: string,
+  sortOrder: "asc" | "desc",
+): Promise<PitchesResponse> => {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(PAGE_SIZE),
+  });
+  if (search.trim()) params.set("name", search.trim());
+  if (type) params.set("type", type);
+  if (sortBy) params.set("sortBy", sortBy);
+  if (sortOrder) params.set("sortOrder", sortOrder);
+
+  return publicFetch(`/pitches?${params.toString()}`).then((res) => res.data);
+};
+
+const PitchesList = ({
+  search,
+  type,
+  sortBy,
+  sortOrder,
+  page,
+  onPageChange,
+}: PitchesListProps) => {
+  const { data, isLoading, isError, error, refetch, isRefetching } = useQuery<
+    PitchesResponse,
+    Error
+  >({
+    queryKey: ["pitches", page, search, type, sortBy, sortOrder],
+    queryFn: () => fetchPitches(page, search, type, sortBy, sortOrder),
+    staleTime: 60 * 1000, // 1 minute
+    placeholderData: (prev) => prev, // keep previous page visible while next loads
+  });
+
+  if (isLoading || isRefetching) return <PitchesListSkeleton />;
+
+  if (isError) {
+    return (
+      <ErrorComponent
+        message={error.message || "Failed to load pitches."}
+        onRetry={() => refetch()}
+      />
+    );
+  }
+
+  const pitches = data?.data ?? [];
+  const totalPages = data?.pagination.totalPages ?? 1;
+
+  if (pitches.length === 0) {
+    return (
+      <div className="flex min-h-[400px] flex-col items-center justify-center gap-2 text-center">
+        <p className="text-foreground text-lg font-semibold">
+          No pitches found
+        </p>
+        <p className="text-muted-foreground text-sm">
+          Try a different search term or clear your filters.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {currentPitches.map((pitch) => (
+        {pitches.map((pitch) => (
           <Link
             key={pitch.id}
             className="group block h-full"
@@ -36,7 +119,7 @@ const PitchesList = () => {
               <div className="relative h-48 overflow-hidden">
                 <img
                   src={pitch.image}
-                  alt={pitch.title}
+                  alt={pitch.name}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -48,7 +131,7 @@ const PitchesList = () => {
                 <div className="absolute right-3 bottom-3 flex items-center gap-1 rounded-xl bg-white/95 px-3 py-1.5 backdrop-blur-sm">
                   <IndianRupee className="text-primary h-3.5 w-3.5" />
                   <span className="font-display text-foreground font-bold">
-                    {pitch.price}
+                    {pitch.pricePerHour}
                   </span>
                   <span className="text-muted-foreground text-xs">/hr</span>
                 </div>
@@ -56,7 +139,7 @@ const PitchesList = () => {
               <div className="flex flex-1 flex-col gap-4 p-5">
                 <div className="space-y-3">
                   <h3 className="text-foreground group-hover:text-primary text-lg font-bold transition-colors">
-                    {pitch.title}
+                    {pitch.name}
                   </h3>
                   <div className="text-muted-foreground flex items-center gap-1.5">
                     <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
@@ -67,7 +150,7 @@ const PitchesList = () => {
                     <span className="text-sm">{pitch.hours}</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {pitch.tags.map((tag) => (
+                    {pitch.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
                         className="bg-muted/60 text-muted-foreground inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs"
@@ -76,11 +159,11 @@ const PitchesList = () => {
                         {tag}
                       </span>
                     ))}
-                    {pitch.more > 0 ? (
+                    {pitch.tags.length > 3 && (
                       <span className="text-primary px-2 py-1 text-xs font-medium">
-                        +{pitch.more} more
+                        +{pitch.tags.length - 3} more
                       </span>
-                    ) : null}
+                    )}
                   </div>
                 </div>
                 <div className="mt-auto">
@@ -92,51 +175,11 @@ const PitchesList = () => {
         ))}
       </div>
 
-      <Pagination className="mt-10">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              aria-disabled={page === 1}
-              onClick={(event) => {
-                event.preventDefault();
-                if (page > 1) {
-                  setPage((current) => current - 1);
-                }
-              }}
-            />
-          </PaginationItem>
-
-          {Array.from({ length: pageCount }, (_, index) => {
-            const pageNumber = index + 1;
-            return (
-              <PaginationItem key={pageNumber}>
-                <PaginationLink
-                  href="#"
-                  isActive={pageNumber === page}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setPage(pageNumber);
-                  }}
-                >
-                  {pageNumber}
-                </PaginationLink>
-              </PaginationItem>
-            );
-          })}
-
-          <PaginationItem>
-            <PaginationNext
-              aria-disabled={page === pageCount}
-              onClick={(event) => {
-                event.preventDefault();
-                if (page < pageCount) {
-                  setPage((current) => current + 1);
-                }
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <PaginationComponent
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </>
   );
 };
