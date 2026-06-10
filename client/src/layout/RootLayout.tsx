@@ -5,11 +5,12 @@ import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { privateFetch } from "@/lib/fetchAPI";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 const RootLayout = () => {
   const { isAuthenticated, setUser, logout } = useAuth();
 
-  const { data, error } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ["currentUser"],
     queryFn: () => privateFetch("/users/me"),
     enabled: isAuthenticated,
@@ -29,6 +30,17 @@ const RootLayout = () => {
       logout();
     }
   }, [error, logout]);
+
+  if (isAuthenticated && isLoading) {
+    return (
+      <div className="bg-background flex h-screen w-screen flex-col items-center justify-center gap-4">
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
+        <p className="text-muted-foreground animate-pulse text-sm font-medium">
+          Verifying session...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">

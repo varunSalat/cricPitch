@@ -14,21 +14,25 @@ import LoginPage from "./pages/auth/LoginPage";
 import PitchDetailsPage from "./pages/PitchDetailsPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import AuthLayout from "./layout/AuthLayout";
+import ProtectedLayout from "./layout/ProtectedLayout";
 
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
         {/* Auth Routes */}
-        <Route path="/" element={<AuthLayout />}>
+        <Route element={<AuthLayout />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
         </Route>
-        {/*Protected Route  */}
+        {/* Public Routes */}
         <Route index element={<HomePage />} />
         <Route path="pitches" element={<PitchesPage />} />
-        <Route path="bookings" element={<MyBookingPage />} />
         <Route path="pitches/:pitchId" element={<PitchDetailsPage />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedLayout />}>
+          <Route path="bookings" element={<MyBookingPage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>,
     ),

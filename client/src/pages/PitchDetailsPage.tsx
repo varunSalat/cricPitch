@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PitchDetailHeroSection from "@/components/pitchDetailsPage/PitchDetailHeroSection";
 import SelectDateSection from "@/components/pitchDetailsPage/SelectDateSection";
 import AvailableSlotSection from "@/components/pitchDetailsPage/AvailableSlotSection";
@@ -11,14 +11,7 @@ const PitchDetailsPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedSlots, setSelectedSlots] = useState<string[]>(["1"]); // Default matching 6:00 AM slot
   const { isAuthenticated } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-    }
-  }, [isAuthenticated]);
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -58,10 +51,9 @@ const PitchDetailsPage = () => {
       </div>
 
       <AuthModal
-        isOpen={showAuthModal}
+        isOpen={!isAuthenticated}
         onClose={() => {
-          setShowAuthModal(false);
-          // Go back to the pitches list page if user rejects logging in
+          // Navigating away only occurs when clicking "Back to Pitches"
           navigate("/pitches");
         }}
       />

@@ -38,7 +38,6 @@ const PitchRightContainer: React.FC<PitchRightContainerProps> = ({
   const hourlyRate = Number(pitch.price);
   const totalPrice = hourlyRate * selectedSlots.length;
 
-  /* ── Empty / Placeholder state ── */
   if (!hasSelectedSlots) {
     return (
       <div className="bg-card border-border flex h-[240px] flex-col items-center justify-center rounded-3xl border p-8 text-center shadow-xs">
@@ -55,7 +54,6 @@ const PitchRightContainer: React.FC<PitchRightContainerProps> = ({
     );
   }
 
-  /* ── Booking Summary state ── */
   return (
     <div className="bg-card border-border flex flex-col rounded-3xl border p-6 shadow-xs">
       <h3 className="text-foreground mb-5 text-base font-bold tracking-tight">
@@ -64,7 +62,6 @@ const PitchRightContainer: React.FC<PitchRightContainerProps> = ({
 
       {/* Details list */}
       <div className="flex flex-col gap-4">
-        {/* Pitch name + location */}
         <div className="flex items-start gap-3.5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/20">
             <MapPin className="h-[18px] w-[18px] text-emerald-600 dark:text-emerald-400" />
@@ -137,8 +134,6 @@ const PitchRightContainer: React.FC<PitchRightContainerProps> = ({
         )}
         totalPrice={totalPrice}
       />
-
-
 
       {/* Trust subtext */}
       <div className="text-muted-foreground/80 mt-3 flex items-center justify-center gap-1.5">

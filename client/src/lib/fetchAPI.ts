@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -10,7 +10,6 @@ interface FetchOptions {
   headers?: Record<string, string>;
 }
 
-// Shared base fetch with JSON handling
 const baseFetch = async (
   url: string,
   options: FetchOptions = {},
@@ -40,17 +39,14 @@ const baseFetch = async (
     throw error;
   }
 
-  // Return null for 204 No Content
   if (response.status === 204) return null;
 
   return response.json();
 };
 
-// Public fetch — no auth token (login, register, public routes)
 export const publicFetch = (url: string, options?: FetchOptions) =>
   baseFetch(url, options);
 
-// Private fetch — attaches Bearer token from cookie automatically
 export const privateFetch = (url: string, options?: FetchOptions) => {
   const token = Cookies.get("access_token");
   const authHeader: Record<string, string> = token

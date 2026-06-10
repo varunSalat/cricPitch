@@ -17,12 +17,7 @@ interface AuthModalProps {
 const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
 
-  const handleSuccess = () => {
-    onClose();
-  };
-
   const handleRegisterSuccess = () => {
-    // Switch to login tab on successful registration so they can log in
     setActiveTab("login");
   };
 
@@ -40,7 +35,6 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           </AlertDialogDescription>
         </div>
 
-        {/* Custom Tab selector within the modal for neat switching */}
         <div className="bg-muted grid grid-cols-2 rounded-xl p-1">
           <Button
             variant={activeTab === "login" ? "secondary" : "ghost"}
@@ -62,13 +56,12 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
         <div className="max-h-[70vh] overflow-y-auto">
           {activeTab === "login" ? (
-            <LoginForm onSuccess={handleSuccess} />
+            <LoginForm />
           ) : (
             <RegisterForm onSuccess={handleRegisterSuccess} />
           )}
         </div>
 
-        {/* Action buttons at the bottom of the alert dialog */}
         <div className="mt-4 flex justify-end gap-3">
           <Button variant="outline" onClick={onClose}>
             Back to Pitches

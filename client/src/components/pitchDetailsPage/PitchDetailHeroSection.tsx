@@ -11,7 +11,6 @@ const PitchDetailHeroSection = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Small multiplier for a subtle parallax effect
       setOffsetY(window.scrollY * 0.2);
     };
 
@@ -40,7 +39,7 @@ const PitchDetailHeroSection = () => {
       </div>
 
       <div className="bg-card overflow-hidden rounded-3xl shadow-sm">
-        <div className="relative h-[420px] sm:h-[480px] overflow-hidden rounded-3xl">
+        <div className="relative h-[420px] overflow-hidden rounded-3xl sm:h-[480px]">
           <img
             src={pitch.image}
             alt={pitch.title}

@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { ShieldCheck } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface ConfirmPitchModalProps {
   isOpen: boolean;
@@ -33,33 +34,40 @@ const ConfirmPitchModal: React.FC<ConfirmPitchModalProps> = ({
   const handleOpenChange = (open: boolean) => {
     onOpenChange(open);
     if (!open) {
-      // Reset the success state after the dialog exit animation finishes
       setTimeout(() => setIsSuccess(false), 300);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[425px] rounded-3xl p-6">
+      <DialogContent className="rounded-3xl p-6 sm:max-w-[425px]">
         {!isSuccess ? (
           <>
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold tracking-tight">Confirm Your Booking</DialogTitle>
-              <DialogDescription className="text-sm font-medium text-muted-foreground mt-1">
+              <DialogTitle className="text-xl font-bold tracking-tight">
+                Confirm Your Booking
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground mt-1 text-sm font-medium">
                 Please review your booking details before confirming.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-5 py-5">
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-muted-foreground text-sm">Pitch</span>
-                <span className="font-bold text-sm">{pitchName}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm font-medium">
+                  Pitch
+                </span>
+                <span className="text-sm font-bold">{pitchName}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-muted-foreground text-sm">Date</span>
-                <span className="font-bold text-sm">{selectedDate}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm font-medium">
+                  Date
+                </span>
+                <span className="text-sm font-bold">{selectedDate}</span>
               </div>
-              <div className="flex justify-between items-start">
-                <span className="font-medium text-muted-foreground text-sm">Time Slots</span>
+              <div className="flex items-start justify-between">
+                <span className="text-muted-foreground text-sm font-medium">
+                  Time Slots
+                </span>
                 <div className="flex flex-col items-end gap-1 text-sm font-bold">
                   {selectedSlots.map((slot, index) => (
                     <span key={index}>{slot}</span>
@@ -67,23 +75,25 @@ const ConfirmPitchModal: React.FC<ConfirmPitchModalProps> = ({
                 </div>
               </div>
               <hr className="border-border/80" />
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-muted-foreground">Total Price</span>
-                <span className="text-xl font-bold text-foreground">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground font-bold">
+                  Total Price
+                </span>
+                <span className="text-foreground text-xl font-bold">
                   ₹ {totalPrice.toLocaleString("en-IN")}
                 </span>
               </div>
             </div>
-            <DialogFooter className="flex flex-row gap-3 sm:justify-end mt-2">
+            <DialogFooter className="mt-2 flex flex-row gap-3 sm:justify-end">
               <button
                 onClick={() => handleOpenChange(false)}
-                className="px-5 py-2.5 rounded-xl font-bold text-muted-foreground hover:bg-muted transition-colors cursor-pointer w-full sm:w-auto"
+                className="text-muted-foreground hover:bg-muted w-full cursor-pointer rounded-xl px-5 py-2.5 font-bold transition-colors sm:w-auto"
               >
                 Cancel
               </button>
               <button
                 onClick={() => setIsSuccess(true)}
-                className="px-5 py-2.5 rounded-xl font-bold text-white bg-primary hover:bg-primary/90 transition-colors shadow-md shadow-primary/20 cursor-pointer w-full sm:w-auto"
+                className="bg-primary hover:bg-primary/90 shadow-primary/20 w-full cursor-pointer rounded-xl px-5 py-2.5 font-bold text-white shadow-md transition-colors sm:w-auto"
               >
                 Confirm & Pay
               </button>
@@ -108,18 +118,12 @@ const ConfirmPitchModal: React.FC<ConfirmPitchModalProps> = ({
                     year: "numeric",
                   })}
                 </strong>{" "}
-                at{" "}
-                <strong>{selectedSlots.join(", ")}</strong>{" "}
-                have been locked and booked successfully.
+                at <strong>{selectedSlots.join(", ")}</strong> have been locked
+                and booked successfully.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="mt-2 sm:justify-center">
-              <button
-                onClick={() => handleOpenChange(false)}
-                className="bg-primary hover:bg-primary/90 cursor-pointer rounded-lg px-6 py-2.5 font-bold text-white"
-              >
-                Awesome!
-              </button>
+              <Button onClick={() => handleOpenChange(false)}>Close</Button>
             </DialogFooter>
           </>
         )}

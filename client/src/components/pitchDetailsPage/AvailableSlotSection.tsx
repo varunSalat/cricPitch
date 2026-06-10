@@ -17,7 +17,7 @@ const AvailableSlotSection: React.FC<AvailableSlotSectionProps> = ({
   selectedSlots,
   onSlotToggle,
 }) => {
-  const [localSelectedSlots, setLocalSelectedSlots] = useState<string[]>(["1"]); // Default matching screenshot (6-7 AM active)
+  const [localSelectedSlots, setLocalSelectedSlots] = useState<string[]>(["1"]);
 
   const activeSelectedSlots = selectedSlots || localSelectedSlots;
 
@@ -38,13 +38,11 @@ const AvailableSlotSection: React.FC<AvailableSlotSectionProps> = ({
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-2 sm:px-6 lg:px-8">
       <div className="bg-card border-border rounded-3xl border p-6 shadow-xs">
-        {/* Header containing title and legend */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-foreground text-lg font-bold tracking-tight">
             Available Slots
           </h2>
 
-          {/* Status indicators / Legend */}
           <div className="flex items-center gap-4 text-sm font-medium">
             <div className="flex items-center gap-2">
               <span className="h-3.5 w-3.5 rounded border border-emerald-300 bg-emerald-100/50" />
@@ -61,7 +59,6 @@ const AvailableSlotSection: React.FC<AvailableSlotSectionProps> = ({
           </div>
         </div>
 
-        {/* Time slots grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {mockSlots.map((slot) => {
             const isSelected = activeSelectedSlots.includes(slot.id);
@@ -79,7 +76,6 @@ const AvailableSlotSection: React.FC<AvailableSlotSectionProps> = ({
                       : "dark:bg-card/50 dark:border-border text-foreground hover:border-primary/50 hover:bg-primary/[0.04] cursor-pointer border-[#d7e6dd] bg-white hover:shadow-xs"
                 }`}
               >
-                {/* Status icon indicators inside the card */}
                 {isSelected && (
                   <span className="absolute top-2 right-3.5 text-[11px] font-bold text-white">
                     ✓

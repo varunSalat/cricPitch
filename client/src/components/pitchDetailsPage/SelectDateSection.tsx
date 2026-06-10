@@ -118,7 +118,6 @@ const SelectDateSection: React.FC<SelectDateSectionProps> = ({
           Select Date
         </h2>
 
-        {/* Scrollable date card list */}
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
@@ -162,7 +161,6 @@ const SelectDateSection: React.FC<SelectDateSectionProps> = ({
           })}
         </div>
 
-        {/* Scroll progress controls */}
         <div className="mt-6 flex items-center gap-4">
           <button
             onClick={scrollLeft}

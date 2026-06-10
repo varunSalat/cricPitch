@@ -1,4 +1,4 @@
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -39,7 +39,10 @@ const PitchesPageHeader = ({
   const selectValue = `${sortBy}-${sortOrder}`;
 
   const handleSelectChange = (value: string) => {
-    const [newSortBy, newSortOrder] = value.split("-") as [string, "asc" | "desc"];
+    const [newSortBy, newSortOrder] = value.split("-") as [
+      string,
+      "asc" | "desc",
+    ];
     onSortChange(newSortBy, newSortOrder);
   };
 
@@ -48,45 +51,58 @@ const PitchesPageHeader = ({
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-foreground text-4xl font-bold tracking-tight sm:text-5xl">
               Cricket Pitches
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-2 text-sm">
               Find and book the perfect venue for your game
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:border-primary hover:text-primary">
-            <SlidersHorizontal className="h-4 w-4" />
-            Filter
-          </button>
         </div>
 
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
           <label className="relative block flex-1">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
             <input
               id="pitch-search"
               type="search"
               value={search}
               onChange={(e) => onSearch(e.target.value)}
               placeholder="Search by name..."
-              className="w-full rounded-2xl border border-border bg-card py-4 pl-12 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 w-full rounded-2xl border py-4 pr-4 pl-12 text-sm focus:ring-2 focus:outline-none"
             />
           </label>
 
-          <div className="flex items-center rounded-2xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground shadow-sm">
-            <span className="text-muted-foreground mr-2 whitespace-nowrap">Sort by:</span>
+          <div className="border-border bg-card text-foreground flex items-center rounded-2xl border px-3 py-2.5 text-sm font-medium shadow-sm">
+            <span className="text-muted-foreground mr-2 whitespace-nowrap">
+              Sort by:
+            </span>
             <Select value={selectValue} onValueChange={handleSelectChange}>
-              <SelectTrigger className="border-none bg-transparent py-0 h-auto focus:ring-0 focus-visible:ring-0 focus:ring-offset-0 focus-visible:ring-offset-0 select-none cursor-pointer p-0 text-foreground font-semibold">
+              <SelectTrigger className="text-foreground h-auto cursor-pointer border-none bg-transparent p-0 py-0 font-semibold select-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="createdAt-desc" className="cursor-pointer">Newest First</SelectItem>
-                <SelectItem value="createdAt-asc" className="cursor-pointer">Oldest First</SelectItem>
-                <SelectItem value="name-asc" className="cursor-pointer">Alphabetical (A-Z)</SelectItem>
-                <SelectItem value="name-desc" className="cursor-pointer">Alphabetical (Z-A)</SelectItem>
-                <SelectItem value="pricePerHour-asc" className="cursor-pointer">Price: Low to High</SelectItem>
-                <SelectItem value="pricePerHour-desc" className="cursor-pointer">Price: High to Low</SelectItem>
+                <SelectItem value="createdAt-desc" className="cursor-pointer">
+                  Newest First
+                </SelectItem>
+                <SelectItem value="createdAt-asc" className="cursor-pointer">
+                  Oldest First
+                </SelectItem>
+                <SelectItem value="name-asc" className="cursor-pointer">
+                  Alphabetical (A-Z)
+                </SelectItem>
+                <SelectItem value="name-desc" className="cursor-pointer">
+                  Alphabetical (Z-A)
+                </SelectItem>
+                <SelectItem value="pricePerHour-asc" className="cursor-pointer">
+                  Price: Low to High
+                </SelectItem>
+                <SelectItem
+                  value="pricePerHour-desc"
+                  className="cursor-pointer"
+                >
+                  Price: High to Low
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

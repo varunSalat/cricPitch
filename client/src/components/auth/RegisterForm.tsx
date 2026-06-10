@@ -13,7 +13,6 @@ import { getAPIErrorMsg } from "@/utils/getAPIErrorMsg";
 import { Eye, EyeOff } from "lucide-react";
 import { publicFetch } from "@/lib/fetchAPI";
 
-// Validation schema
 const registerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
@@ -21,7 +20,6 @@ const registerSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-// Infer the TypeScript type from the schema
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 interface RegisterFormProps extends React.ComponentProps<"div"> {

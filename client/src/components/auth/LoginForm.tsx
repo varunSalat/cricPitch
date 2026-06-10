@@ -25,17 +25,11 @@ interface LoginFormProps extends React.ComponentProps<"div"> {
   onSuccess?: () => void;
 }
 
-export function LoginForm({
-  className,
-  onSuccess,
-  ...props
-}: LoginFormProps) {
+export function LoginForm({ className, onSuccess, ...props }: LoginFormProps) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const pathname = useLocation().pathname;
-
-  console.log("pathname", pathname);
 
   const {
     register: formRegister,
@@ -65,7 +59,6 @@ export function LoginForm({
       if (onSuccess) {
         onSuccess();
       }
-      // Only navigate to dashboard/home if user was on login page
       if (pathname === "/login") {
         navigate("/");
       }
