@@ -39,6 +39,12 @@ npm run dev        # http://localhost:5173
 The client expects the API URL and socket origin in its `.env` (see `client/.env.example`),
 and the server needs a `DATABASE_URL` and `JWT_SECRET` in `server/.env`.
 
+## API docs (Swagger)
+
+Once the backend is running, interactive Swagger UI docs are available at
+`http://localhost:3000/api-docs`. Every endpoint is documented there with request/response
+shapes, and you can try the routes out (including auth) straight from the browser.
+
 ## Tech stack
 
 - **Frontend:** React 19, Vite, TypeScript, Tailwind CSS, TanStack Query, Socket.IO client

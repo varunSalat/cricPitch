@@ -101,6 +101,12 @@ A slot's availability is derived, not stored on a single column: `isBooked` on t
 TimeSlot plus any ACTIVE Reservation determines whether it shows as BOOKED, RESERVED or
 AVAILABLE.
 
+## API docs (Swagger)
+
+Interactive Swagger UI docs are available at `http://localhost:3000/api-docs` once the
+server is running. Every endpoint below is documented there, so you can read the request/
+response shapes and try the routes out (including auth) straight from the browser.
+
 ## API
 
 Everything is mounted under `/api/v1`.
