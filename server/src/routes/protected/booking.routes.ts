@@ -61,4 +61,30 @@ router.post(
  */
 router.get("/", authenticate, bookingController.getMyBookings);
 
+/**
+ * @swagger
+ * /bookings/{id}:
+ *   delete:
+ *     summary: Cancel Booking
+ *     tags:
+ *       - Bookings
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Booking ID to cancel
+ *     responses:
+ *       200:
+ *         description: Booking cancelled successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Booking not found
+ */
+router.delete("/:id", authenticate, bookingController.cancelBooking);
+
 export default router;

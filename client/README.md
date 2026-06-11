@@ -1,73 +1,108 @@
-# React + TypeScript + Vite
+# Cricket Pitch Booking — Web Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React frontend for the pitch booking app. Users browse pitches, pick a date, see slot
+availability update live as other people reserve or book, hold a slot for 2 minutes while
+they confirm, and manage their bookings.
 
-Currently, two official plugins are available:
+Built with React 19, Vite, TypeScript and Tailwind v4.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- React 19 + Vite + TypeScript
+- Tailwind CSS v4 with shadcn-style components (Radix primitives)
+- TanStack Query for server data (pitches, bookings)
+- Socket.IO client for live slot availability
+- React Router v7
+- React Hook Form + Zod for forms
+- sonner for toasts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Setup
 
-## Expanding the ESLint configuration
+Needs Node 18+ and the API running (see the `server` README).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Create a `.env` file in `client/` (there's a `.env.example` to copy)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```env
+VITE_API_URL="http://localhost:3000/api/v1"
+VITE_SOCKET_URL="http://localhost:3000"
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+`VITE_API_URL` points at the REST API (with the `/api/v1` prefix). `VITE_SOCKET_URL` is the
+backend origin only — no path — because Socket.IO connects to the server root. If
+`VITE_SOCKET_URL` is missing, the client falls back to the page origin and the socket won't
+connect.
+
+3. Run
+
+```bash
+npm run dev
+```
+
+Vite serves on `http://localhost:5173`. Note that env changes only take effect after a
+restart.
+
+## Scripts
+
+- `npm run dev` — dev server
+- `npm run build` — type-check and build for production
+- `npm run preview` — preview the production build
+- `npm run lint` — eslint
+
+## Routes
+
+| Path             | Access    | What it is                          |
+| ---------------- | --------- | ----------------------------------- |
+| `/`              | public    | Landing page                        |
+| `/pitches`       | public    | Pitch listing with search + paging  |
+| `/pitches/:id`   | public    | Pitch details, date picker, slots   |
+| `/bookings`      | protected | The signed-in user's bookings       |
+| `/login`, `/register` | public | Auth screens                     |
+
+## Folder layout
+
+```
+src/
+  components/
+    pitchDetailsPage/   slot grid, booking summary, confirm modal
+    pitchesPage/        listing, filters, skeletons
+    myBookingPage/      booking cards + cancel modal
+    ui/                 shared shadcn components
+    general/            header, footer, error, pagination
+  context/              AuthContext, SocketContext
+  hooks/                useSlots (socket slot logic), useDebounce
+  lib/                  fetchAPI, bookings API, socket event names
+  pages/                route components
+  layout/               root / auth / protected layouts
+  data/                 static pitch data used for some views
+```
+
+## How the real-time part works
+
+The socket connection is set up once in `context/SocketContext.tsx`. It connects with the
+user's JWT (read from cookies) and exposes the socket through a hook.
+
+All slot logic lives in `hooks/useSlots.ts`:
+
+- On mount (and when pitch or date changes) it emits `slot:get` and renders the returned slots.
+- It listens for `slot:updated` and `slot:expired`, so when another user reserves, books, or
+  lets a hold expire, the grid updates without a refetch.
+- `reserveSlot` / `unreserveSlot` send the reserve/unreserve events and optimistically update
+  the UI, with the server broadcast confirming it for everyone else.
+
+Bookings (the `/bookings` page) use TanStack Query rather than sockets. After a booking is
+confirmed or cancelled, the `["bookings"]` query is invalidated so the list reflects the
+change.
+
+## Data fetching
+
+`lib/fetchAPI.ts` wraps `fetch` with two helpers: `publicFetch` for open endpoints and
+`privateFetch`, which attaches the bearer token from cookies. Both throw an `Error` carrying
+the API's message and status, which is what TanStack Query surfaces to the UI for the
+loading / error states.
 ```

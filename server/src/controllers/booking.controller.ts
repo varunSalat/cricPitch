@@ -45,4 +45,31 @@ export class BookingController {
         );
     },
   );
+
+  cancelBooking = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response) => {
+      if (!req.user) {
+        throw new Error("Unauthorized");
+      }
+
+      const booking = await this.bookingService.cancelBooking(
+        req.user.userId,
+        req.params.id as string,
+      );
+
+      io.emit(SOCKET_EVENTS.SLOT_UPDATED, {
+        slotId: booking.timeSlotId,
+        status: "AVAILABLE",
+      });
+      io.emit(SOCKET_EVENTS.BOOKING_CANCELLED, { bookingId: booking.id });
+
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(true, 200, "Booking cancelled successfully", {
+            id: booking.id,
+          }),
+        );
+    },
+  );
 }

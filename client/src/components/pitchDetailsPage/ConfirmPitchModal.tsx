@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Loader2, ShieldCheck } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { privateFetch } from "@/lib/fetchAPI";
@@ -36,6 +37,7 @@ const ConfirmPitchModal: React.FC<ConfirmPitchModalProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [isReserving, setIsReserving] = useState(false);
   const [reserveError, setReserveError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const handleOpenChange = (open: boolean) => {
     // Don't allow closing while reserving
@@ -64,6 +66,7 @@ const ConfirmPitchModal: React.FC<ConfirmPitchModalProps> = ({
       });
 
       setIsSuccess(true);
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast.success("Booking confirmed!", {
         description: "Your slot has been successfully booked.",
       });

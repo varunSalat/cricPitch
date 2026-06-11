@@ -69,4 +69,34 @@ export class BookingService {
   async getMyBookings(userId: string) {
     return this.bookingRepository.findByUserId(userId);
   }
+
+  async cancelBooking(userId: string, bookingId: string) {
+    const booking = await this.bookingRepository.findByIdAndUser(
+      bookingId,
+      userId,
+    );
+
+    if (!booking) {
+      throw new AppError("Booking not found", 404);
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.delete({
+        where: {
+          id: booking.id,
+        },
+      });
+
+      await tx.timeSlot.update({
+        where: {
+          id: booking.timeSlotId,
+        },
+        data: {
+          isBooked: false,
+        },
+      });
+    });
+
+    return booking;
+  }
 }

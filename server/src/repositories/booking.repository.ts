@@ -35,4 +35,13 @@ export class BookingRepository {
       },
     });
   }
+
+  async findByIdAndUser(id: string, userId: string) {
+    return prisma.booking.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+  }
 }

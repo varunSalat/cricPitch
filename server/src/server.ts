@@ -13,7 +13,7 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {
-  // await connectRedis();
+  await connectRedis();
 
   await initSocket(server);
   startReservationExpiryJob();

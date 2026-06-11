@@ -1,23 +1,24 @@
-import type { upcomingBookings } from "@/data";
 import {
   CalendarDays,
   Clock3,
   IndianRupee,
   CheckCircle2,
   XCircle,
+  Loader2,
 } from "lucide-react";
 
+import type { BookingView } from "@/lib/bookings";
 import { Badge } from "@/components/ui/badge";
 import BookingCancellationModal from "./BookingCancellationModal";
 import { Button } from "../ui/button";
 
-type Booking = (typeof upcomingBookings)[number];
-
 interface BookingCardProps {
-  booking: Booking;
+  booking: BookingView;
+  onCancel?: (id: string) => void;
+  isCancelling?: boolean;
 }
 
-const BookingCard = ({ booking }: BookingCardProps) => {
+const BookingCard = ({ booking, onCancel, isCancelling }: BookingCardProps) => {
   const isConfirmed = booking.status === "Confirmed";
 
   return (
@@ -55,14 +56,18 @@ const BookingCard = ({ booking }: BookingCardProps) => {
             </span>
           </div>
 
-          {isConfirmed && (
+          {booking.isUpcoming && isConfirmed && (
             <BookingCancellationModal
               bookingId={booking.id}
               bookingTitle={booking.title}
-              onConfirm={(id) => console.log("Confirm cancellation for", id)}
+              onConfirm={(id) => onCancel?.(id)}
               trigger={
-                <Button variant="destructive" size="sm">
-                  <XCircle className="h-4 w-4" />
+                <Button variant="destructive" size="sm" disabled={isCancelling}>
+                  {isCancelling ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <XCircle className="h-4 w-4" />
+                  )}
                   Cancel
                 </Button>
               }

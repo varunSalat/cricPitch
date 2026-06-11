@@ -7,9 +7,23 @@ export const pubClient = createClient({
 
 export const subClient = pubClient.duplicate();
 
-export const connectRedis = async () => {
-  await pubClient.connect();
-  await subClient.connect();
+export const connectRedis = async (): Promise<boolean> => {
+  if (!process.env.REDIS_URL) {
+    logger.warn("REDIS_URL not set, skipping Redis connection");
+    return false;
+  }
 
-  logger.info("Redis connected");
+  try {
+    await pubClient.connect();
+    await subClient.connect();
+    logger.info("Redis connected");
+    return true;
+  } catch (error) {
+    logger.warn(
+      `Redis connection failed, falling back to in-memory adapter: ${
+        (error as Error).message
+      }`,
+    );
+    return false;
+  }
 };
